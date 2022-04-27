@@ -10,7 +10,7 @@ namespace KinectWPF
     {
         KinectSensor kinect = KinectSensor.KinectSensors[0];
 
-        private readonly Pen skeletonPen = new Pen(Brushes.Black, 6);
+        private readonly Pen skeletonPen = new Pen(Brushes.White, 6);
         private DrawingImage imageSource;
         private DrawingGroup drawingGroup;
 
@@ -54,6 +54,8 @@ namespace KinectWPF
         {
             using (DrawingContext dc = drawingGroup.Open())
             {
+                dc.DrawRectangle(Brushes.Black, null, new Rect(0.0, 0.0, 800, 800));
+
                 foreach (Skeleton skel in skeletons)
                 {
                     if (skel.TrackingState == SkeletonTrackingState.Tracked)
@@ -67,7 +69,6 @@ namespace KinectWPF
         private void DrawSkeleton(Skeleton skeleton, DrawingContext drawingContext)
         {
             DrawBone(skeleton, drawingContext, JointType.Head, JointType.ShoulderCenter);
-            coordinatesLabel.Content = skeleton.Joints[JointType.Head].Position.X + ", " + skeleton.Joints[JointType.Head].Position.Y;
             DrawBone(skeleton, drawingContext, JointType.ShoulderCenter, JointType.ShoulderLeft);
             DrawBone(skeleton, drawingContext, JointType.ShoulderCenter, JointType.ShoulderRight);
             DrawBone(skeleton, drawingContext, JointType.ShoulderCenter, JointType.Spine);
