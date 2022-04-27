@@ -1,5 +1,6 @@
 ﻿using Microsoft.Kinect;
 using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -54,7 +55,7 @@ namespace KinectWPF
         {
             using (DrawingContext dc = drawingGroup.Open())
             {
-                dc.DrawRectangle(Brushes.Black, null, new Rect(0.0, 0.0, 800, 800));
+                dc.DrawRectangle((GestureDetected(skeletons.First()) == true) ? Brushes.Red : Brushes.Black, null, new Rect(0.0, 0.0, 800, 800));
 
                 foreach (Skeleton skel in skeletons)
                 {
@@ -87,6 +88,31 @@ namespace KinectWPF
             DrawBone(skeleton, drawingContext, JointType.HipRight, JointType.KneeRight);
             DrawBone(skeleton, drawingContext, JointType.KneeRight, JointType.AnkleRight);
             DrawBone(skeleton, drawingContext, JointType.AnkleRight, JointType.FootRight);
+        }
+
+        private bool GestureDetected(Skeleton skeleton)
+        {
+            var LS = skeleton.Joints[JointType.ShoulderLeft].Position;
+            var LE = skeleton.Joints[JointType.ElbowLeft].Position;
+            var LH = skeleton.Joints[JointType.HandLeft].Position;
+
+            var RS = skeleton.Joints[JointType.ShoulderRight].Position;
+            var RE = skeleton.Joints[JointType.ElbowRight].Position;
+            var RH = skeleton.Joints[JointType.HandRight].Position;
+
+            if ((LS.Y > LE.Y) 
+                && (LH.Y > LS.Y) 
+                && (LS.X > LE.X) 
+                && (LS.X > LH.X) 
+                && (RS.Y > RE.Y) 
+                && (RS.Y < RH.Y) 
+                && (RS.X < RE.X) 
+                && (RS.X < RH.X))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private void DrawBone(Skeleton skeleton, DrawingContext drawingContext, JointType jointType0, JointType jointType1)
