@@ -11,6 +11,12 @@ namespace KinectWPF.Node
         private float width, height;
         private List<Node> nodes;
 
+        public NodeManager(float width, float height)
+        {
+            this.width = width;
+            this.height = height;
+        }
+
         public void AddNode(Node newNode)
         {
             if (!nodes.Exists((node) => { return node == newNode; }))
