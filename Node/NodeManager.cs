@@ -32,13 +32,13 @@ namespace KinectWPF.Node
             nodes.Remove(removedNode);
         }
 
-        public void GenerateNodes(int nodeCount, Node.NodeType nodeType)
+        public void GenerateNodes(int nodeCount, float radius, Node.NodeType nodeType)
         {
             Random rnd = new Random();
 
-            for (int i = 0; i < nodeCount)
+            for (int i = 0; i < nodeCount; ++i)
             {
-                Node newNode = new Node((float)rnd.NextDouble() * width, (float)rnd.NextDouble() * height, nodeType);
+                Node newNode = new Node((float)rnd.NextDouble() * width, (float)rnd.NextDouble() * height, radius, nodeType);
                 AddNode(newNode);
             }
         }

@@ -11,12 +11,14 @@ namespace KinectWPF.Node
         public enum NodeType { Click };
 
         public float x, y;
+        public float radius;
         public NodeType nodeType;
 
-        public Node(float x, float y, NodeType nodeType)
+        public Node(float x, float y, float radius, NodeType nodeType)
         {
             this.x = x;
             this.y = y;
+            this.radius = radius;
 
             this.nodeType = nodeType;
         }
