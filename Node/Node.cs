@@ -12,5 +12,18 @@ namespace KinectWPF.Node
 
         public float x, y;
         public NodeType nodeType;
+
+        public Node(float x, float y, NodeType nodeType)
+        {
+            this.x = x;
+            this.y = y;
+
+            this.nodeType = nodeType;
+        }
+
+        public Node()
+        {
+
+        }
     }
 }
