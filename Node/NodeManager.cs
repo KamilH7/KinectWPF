@@ -18,5 +18,10 @@ namespace KinectWPF.Node
                 nodes.Add(newNode);
             }
         }
+
+        public void RemoveNode(Node removedNode)
+        {
+            nodes.Remove(removedNode);
+        }
     }
 }
