@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -41,6 +42,13 @@ namespace KinectWPF.Node
                 Node newNode = new Node((float)rnd.NextDouble() * width, (float)rnd.NextDouble() * height, radius, nodeType);
                 AddNode(newNode);
             }
+        }
+
+        public Node CircleIntersection(float x, float y, float radius)
+        {
+            Node intersectingNode = nodes.Find((node) => { return Math.Pow(x - node.x, 2) + Math.Pow(y - node.y, 2) < Math.Pow(radius + node.radius, 2); });
+
+            return intersectingNode;
         }
     }
 }
