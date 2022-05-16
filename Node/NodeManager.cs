@@ -11,6 +11,8 @@ namespace KinectWPF.Node
         private float width, height;
         private List<Node> nodes;
 
+        public IReadOnlyList<Node> Nodes { get => nodes; }
+
         public NodeManager(float width, float height)
         {
             this.width = width;
