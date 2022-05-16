@@ -5,5 +5,6 @@
     <Grid>
         <TextBlock x:Name="Message"  HorizontalAlignment="Center" VerticalAlignment="Top" Height="30" Background="Green" Foreground="Red" Margin="0,0,0,462.8" />
         <Image x:Name="kinectImage" Width="Auto" Height="800"/>
+        <Canvas x:Name="canvas" Background="White"></Canvas>
     </Grid>
 </Window>
