@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
 namespace KinectWPF
@@ -16,7 +17,7 @@ namespace KinectWPF
         private DrawingImage imageSource;
         private DrawingGroup drawingGroup;
         private int circlesCount;
-
+        private int scores;
         public MainWindow()
         {
             InitializeComponent();
@@ -47,14 +48,20 @@ namespace KinectWPF
                 Debug();
             }
         }
+        private void AddScoresAndSetLabel(int scoreAmount)
+        {
+            scores += scoreAmount;
+
+            ScorLabel.Content += $" {scores}";
+        }
 
         #region DEBUG
         private void Debug()
         {
+            AddScoresAndSetLabel(1000);
             GenerateRandomCirclePoint();
         }
-
-
+       
         private void GenerateRandomCirclePoint()
         {
             var rnd = new Random();
@@ -65,7 +72,7 @@ namespace KinectWPF
 
             int circleSize = rnd.Next(Constants.CIRCLE_MIN_SIZE, Constants.CIRCLE_MAX_SIZE);
 
-            circle.Fill = Brushes.Black;
+            circle.Fill = Brushes.Red;
             circle.Width = circleSize;
             circle.Height = circle.Width;
 
