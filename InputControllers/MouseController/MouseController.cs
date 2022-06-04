@@ -13,6 +13,7 @@ namespace KinectWPF.Controllers.MouseController
         public void Initialize(MainWindow window)
         {
             this.window = window;
+            window.OnUpdate += DrawPointer;
         }
 
         public bool IsHoveringOver(Point point)
@@ -23,6 +24,11 @@ namespace KinectWPF.Controllers.MouseController
             double distance = Math.Sqrt(sqrDistance);
 
             return distance <= acceptanceRadius ? true : false;
+        }
+
+        private void DrawPointer()
+        {
+
         }
 
         private Point GetMousePositionOnScreen()
