@@ -65,6 +65,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Enums\FruitTypeEnum.cs" />
+    <Compile Include="Helpers\RandomHelper.cs" />
     <Compile Include="InputControllers\IInputController.cs" />
     <Compile Include="InputControllers\KinectController\KinectController.cs" />
     <Compile Include="InputControllers\MouseController\MouseController.cs" />
@@ -104,6 +106,10 @@
   <ItemGroup>
     <Resource Include="Resources\Background.jpg" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\FruitImages\banana.png" />
+    <Resource Include="Resources\FruitImages\papaya.png" />
+    <Resource Include="Resources\FruitImages\peach.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
