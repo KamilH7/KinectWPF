@@ -1,3 +1,4 @@
+
 ﻿using KinectWPF.Enums;
 using KinectWPF.Helpers;
 using System;
@@ -7,6 +8,8 @@ using System.Reflection;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+﻿using System.Windows.Controls;
+
 
 namespace KinectWPF.Node
 {
@@ -19,18 +22,21 @@ namespace KinectWPF.Node
         public NodeType nodeType;
         public Rectangle sprite;
 
-        public Node(float x, float y, float radius, NodeType nodeType)
+        public Node(Image image, float x, float y, MainWindow mainWindow)
         {
             this.x = x;
             this.y = y;
-            this.radius = radius;
+        }
 
+        public void Update()
+        {
             sprite = GetImage();
 
             this.nodeType = nodeType;
+
         }
 
-        public Node()
+        public void Destroy()
         {
 
         }
