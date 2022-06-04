@@ -1,5 +1,6 @@
 ﻿using KinectWPF.Controllers.KinectController;
 using KinectWPF.Controllers.MouseController;
+using KinectWPF.Node;
 using System;
 using System.Diagnostics;
 using System.Threading;
@@ -11,7 +12,7 @@ namespace KinectWPF
     public partial class MainWindow : Window
     {
         public Image MainImg { get; private set; }
-        public float DeltaTime = 0;
+        public static float DeltaTime = 0;
         public event Action OnUpdate;
        
         private IInputController inputController;
@@ -24,6 +25,7 @@ namespace KinectWPF
             InitializeReferences();
             InitializeController();
 
+            NodeManager nodeController = new NodeManager((float) MainImg.Width, (float) MainImg.Height, this);
             Loop();
         }
 
@@ -39,9 +41,7 @@ namespace KinectWPF
 
                 TimeSpan span = DateTime.Now.Subtract(startTime);
 
-                DeltaTime = (float) span.TotalMilliseconds;
-
-                Trace.WriteLine(DeltaTime);
+                DeltaTime = (float) span.TotalSeconds;
             }
         }
 
