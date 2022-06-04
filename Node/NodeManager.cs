@@ -1,26 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace KinectWPF.Node
 {
     class NodeManager
     {
+        private const float spawnTimer = 2f;
+
+        private float currentSpawnTimer;
         private float width, height;
-        private List<Node> nodes;
+        private List<Node> nodes = new List<Node>();
 
         public IReadOnlyList<Node> Nodes { get => nodes; }
 
-        public NodeManager(float width, float height)
+        public NodeManager(float width, float height, MainWindow mainWindow)
         {
             this.width = width;
             this.height = height;
+
+            mainWindow.OnUpdate += Update;
         }
 
-        public void AddNode(Node newNode)
+        private void Update()
+        {
+            currentSpawnTimer += MainWindow.DeltaTime;
+
+            if(currentSpawnTimer >= spawnTimer)
+            {
+                GenerateNodes(1,1,Node.NodeType.Click);
+
+                currentSpawnTimer = 0;
+
+                Trace.WriteLine(MainWindow.DeltaTime);
+            }
+        }
+
+        private void AddNode(Node newNode)
         {
             if (!nodes.Exists((node) => { return node == newNode; }))
             {
@@ -28,12 +44,12 @@ namespace KinectWPF.Node
             }
         }
 
-        public void RemoveNode(Node removedNode)
+        private void RemoveNode(Node removedNode)
         {
             nodes.Remove(removedNode);
         }
 
-        public void GenerateNodes(int nodeCount, float radius, Node.NodeType nodeType)
+        private void GenerateNodes(int nodeCount, float radius, Node.NodeType nodeType)
         {
             Random rnd = new Random();
 
@@ -44,7 +60,7 @@ namespace KinectWPF.Node
             }
         }
 
-        public Node CircleIntersection(float x, float y, float radius)
+        private Node CircleIntersection(float x, float y, float radius)
         {
             Node intersectingNode = nodes.Find((node) => { return Math.Pow(x - node.x, 2) + Math.Pow(y - node.y, 2) < Math.Pow(radius + node.radius, 2); });
 
