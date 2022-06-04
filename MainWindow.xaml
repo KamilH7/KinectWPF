@@ -19,7 +19,7 @@
 
         <Canvas x:Name="canvas" Grid.RowSpan="3" Grid.ColumnSpan="2">
             <Canvas.Background>
-                <ImageBrush ImageSource=".\Images\Background.jpg" />
+                <ImageBrush ImageSource=".\Resources\Background.jpg" />
             </Canvas.Background>
         </Canvas>
     </Grid>
