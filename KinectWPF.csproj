@@ -65,9 +65,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Controllers\IInputController.cs" />
-    <Compile Include="Controllers\KinectController\KinectController.cs" />
-    <Compile Include="Controllers\MouseController\MouseController.cs" />
+    <Compile Include="InputControllers\IInputController.cs" />
+    <Compile Include="InputControllers\KinectController\KinectController.cs" />
+    <Compile Include="InputControllers\MouseController\MouseController.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -104,5 +104,6 @@
   <ItemGroup>
     <Resource Include="Resources\Background.jpg" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
