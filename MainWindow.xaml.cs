@@ -10,7 +10,7 @@ namespace KinectWPF
         public Image MainImg { get; private set; }
 
         private IInputController inputController;
-        private bool useMouse = false;
+        private bool useMouse = true;
 
         public MainWindow()
         {
