@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Windows.Controls;
 
 namespace KinectWPF.Node
 {
@@ -14,16 +10,18 @@ namespace KinectWPF.Node
         public float radius;
         public NodeType nodeType;
 
-        public Node(float x, float y, float radius, NodeType nodeType)
+        public Node(Image image, float x, float y, MainWindow mainWindow)
         {
             this.x = x;
             this.y = y;
-            this.radius = radius;
-
-            this.nodeType = nodeType;
         }
 
-        public Node()
+        public void Update()
+        {
+
+        }
+
+        public void Destroy()
         {
 
         }
