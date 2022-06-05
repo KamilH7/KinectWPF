@@ -3,7 +3,7 @@
     public enum FruitTypeEnum
     {
         BANANA,
-        PAPAYA,
-        PEACH
+        APPLE,
+        STRAWBERRY
     }
 }

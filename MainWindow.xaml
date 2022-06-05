@@ -21,6 +21,18 @@
             <Canvas.Background>
                 <ImageBrush ImageSource=".\Resources\Background.jpg" />
             </Canvas.Background>
+
+            <Rectangle x:Name="leftHand" Width="50" Height="50" Canvas.Left="0" Canvas.Top="0" Visibility="Hidden">
+                <Rectangle.Fill>
+                    <ImageBrush ImageSource="Resources/hand_icon_left.png" Stretch="Uniform"/>
+                </Rectangle.Fill>
+            </Rectangle>
+
+            <Rectangle x:Name="rightHand" Width="50" Height="50" Canvas.Left="50" Canvas.Top="0" Visibility="Hidden">
+                <Rectangle.Fill>
+                    <ImageBrush ImageSource="Resources/hand_icon_right.png" Stretch="Uniform"/>
+                </Rectangle.Fill>
+            </Rectangle>
         </Canvas>
     </Grid>
 </Window>

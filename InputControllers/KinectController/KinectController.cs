@@ -2,18 +2,27 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace KinectWPF.Controllers.KinectController
 {
     class KinectController : IInputController
     {
         private MainWindow window;
+        private Rectangle leftHandImage;
+        private Rectangle rightHandImage;
         private KinectSensor kinect = KinectSensor.KinectSensors[0];
         private readonly Pen skeletonPen = new Pen(Brushes.White, 6);
         private DrawingImage imageSource;
         private DrawingGroup drawingGroup;
 
-        public bool IsHoveringOver(Point point)
+        public KinectController(Rectangle leftHandImage, Rectangle rightHandImage)
+        {
+            this.leftHandImage = leftHandImage;
+            this.rightHandImage = rightHandImage;
+        }
+
+        public bool IsHoveringOver(Point point, float radius)
         {
             return false;
         }
@@ -28,7 +37,7 @@ namespace KinectWPF.Controllers.KinectController
         {
             drawingGroup = new DrawingGroup();
             imageSource = new DrawingImage(drawingGroup);
-            window.MainImg.Source = imageSource;
+            window.KinectImage.Source = imageSource;
 
             if (kinect.Status == KinectStatus.Connected)
             {

@@ -1,72 +1,42 @@
-
-﻿using KinectWPF.Enums;
-using KinectWPF.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Shapes;
-﻿using System.Windows.Controls;
 
 
 namespace KinectWPF.Node
 {
     class Node
     {
-        public enum NodeType { Click };
-
-        public float x, y;
-        public float radius;
-        public NodeType nodeType;
-        public Rectangle sprite;
-
-        public Node(Image image, float x, float y, MainWindow mainWindow)
+        private MainWindow mainWindow;
+        private Point position;
+        private Rectangle sprite;
+        
+        public Node(MainWindow mainWindow, Rectangle sprite, Point position)
         {
-            this.x = x;
-            this.y = y;
+            this.mainWindow = mainWindow;
+            this.sprite = sprite;
+
+            mainWindow.MainCanvas.Children.Add(sprite);
+
+            this.position = position;
+
+            Canvas.SetLeft(sprite, position.X - sprite.Height/2);
+            Canvas.SetTop(sprite, position.Y - sprite.Width/2);
         }
-
-        public void Update()
-        {
-            sprite = GetImage();
-
-            this.nodeType = nodeType;
-
-        }
-
         public void Destroy()
         {
-
+            mainWindow.MainCanvas.Children.Remove(sprite);
         }
 
-        internal Rectangle GetImage()
+        public Point GetPosition()
         {
-            ImageBrush fruitBrush = new ImageBrush();
-            int randomNumber = RandomHelper.GenerateRandomFruitType();
-
-            fruitBrush.ImageSource = new BitmapImage(GetFruitsInformations().FirstOrDefault(f => f.Key == randomNumber).Value);
-
-            var fruit = new Rectangle()
-            {
-                Tag = "Fruit",
-                Height = 110,
-                Width = 110,
-                Fill = fruitBrush
-            };
-
-            return fruit;
+            return position;
         }
 
-        internal Dictionary<int, Uri> GetFruitsInformations()
+        public float GetRadius()
         {
-            return new Dictionary<int, Uri>()
-            {
-                {  (int)FruitTypeEnum.PAPAYA, new Uri(string.Concat(@"pack://application:,,,/",Assembly.GetExecutingAssembly().GetName().Name,@";component/",@"Images/papaya.png"), UriKind.Absolute) },
-                {  (int)FruitTypeEnum.BANANA, new Uri(string.Concat(@"pack://application:,,,/",Assembly.GetExecutingAssembly().GetName().Name,@";component/",@"Images/banana.png"), UriKind.Absolute) },
-                {  (int)FruitTypeEnum.PEACH, new Uri(string.Concat(@"pack://application:,,,/",Assembly.GetExecutingAssembly().GetName().Name,@";component/",@"Images/peach.png"), UriKind.Absolute) }
-            };
+            return (float) sprite.Width/2;
         }
     }
 }
