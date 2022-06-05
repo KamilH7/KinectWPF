@@ -77,7 +77,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Node\Node.cs" />
-    <Compile Include="Node\NodeManager.cs" />
+    <Compile Include="Node\NodeSpawner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -110,6 +110,10 @@
     <Resource Include="Resources\FruitImages\banana.png" />
     <Resource Include="Resources\FruitImages\papaya.png" />
     <Resource Include="Resources\FruitImages\peach.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\hand_icon_left.png" />
+    <Resource Include="Resources\hand_icon_right.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
