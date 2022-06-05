@@ -22,7 +22,7 @@ namespace KinectWPF.Controllers.KinectController
             this.rightHandImage = rightHandImage;
         }
 
-        public bool IsHoveringOver(Point point)
+        public bool IsHoveringOver(Point point, float radius)
         {
             return false;
         }

@@ -108,12 +108,14 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\FruitImages\banana.png" />
-    <Resource Include="Resources\FruitImages\papaya.png" />
-    <Resource Include="Resources\FruitImages\peach.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\hand_icon_left.png" />
     <Resource Include="Resources\hand_icon_right.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\FruitImages\apple.png" />
+    <Resource Include="Resources\FruitImages\strawberry.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

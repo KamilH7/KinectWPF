@@ -17,25 +17,21 @@ namespace KinectWPF.Node
     {
         Dictionary<int, Uri> FruitImages = new Dictionary<int, Uri>()
             {
-                {  (int)FruitTypeEnum.PAPAYA, new Uri(string.Concat(@"pack://application:,,,/",Assembly.GetExecutingAssembly().GetName().Name,@";component/",@"Resources/FruitImages/papaya.png"), UriKind.Absolute) },
+                {  (int)FruitTypeEnum.STRAWBERRY, new Uri(string.Concat(@"pack://application:,,,/",Assembly.GetExecutingAssembly().GetName().Name,@";component/",@"Resources/FruitImages/strawberry.png"), UriKind.Absolute) },
                 {  (int)FruitTypeEnum.BANANA, new Uri(string.Concat(@"pack://application:,,,/",Assembly.GetExecutingAssembly().GetName().Name,@";component/",@"Resources/FruitImages/banana.png"), UriKind.Absolute) },
-                {  (int)FruitTypeEnum.PEACH, new Uri(string.Concat(@"pack://application:,,,/",Assembly.GetExecutingAssembly().GetName().Name,@";component/",@"Resources/FruitImages/peach.png"), UriKind.Absolute) }
+                {  (int)FruitTypeEnum.APPLE, new Uri(string.Concat(@"pack://application:,,,/",Assembly.GetExecutingAssembly().GetName().Name,@";component/",@"Resources/FruitImages/apple.png"), UriKind.Absolute) }
             };
 
         private IInputController inputController;
         private MainWindow mainWindow;
-        private const float spawnTimer = 2f;
+        private const float spawnTimer = 1f;
         private float currentSpawnTimer;
-        private float width, height;
         private List<Node> nodes = new List<Node>();
 
         public NodeSpawner(MainWindow mainWindow, IInputController inputController)
         {
             this.mainWindow = mainWindow;
             this.inputController = inputController;
-
-            width = (float) mainWindow.MainCanvas.Width;
-            height = (float) mainWindow.MainCanvas.Height;
 
             mainWindow.OnUpdate += Update;
         }
@@ -50,7 +46,7 @@ namespace KinectWPF.Node
         {
             for (int i = nodes.Count - 1; i >= 0; i--)
             {
-                if (inputController.IsHoveringOver(nodes[i].GetPosition()))
+                if (inputController.IsHoveringOver(nodes[i].GetPosition(),nodes[i].GetRadius()))
                 {
                     nodes[i].Destroy();
                     RemoveNode(nodes[i]);

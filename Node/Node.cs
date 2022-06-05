@@ -11,7 +11,7 @@ namespace KinectWPF.Node
         private MainWindow mainWindow;
         private Point position;
         private Rectangle sprite;
-
+        
         public Node(MainWindow mainWindow, Rectangle sprite, Point position)
         {
             this.mainWindow = mainWindow;
@@ -21,8 +21,8 @@ namespace KinectWPF.Node
 
             this.position = position;
 
-            Canvas.SetLeft(sprite, position.X);
-            Canvas.SetTop(sprite, position.Y);
+            Canvas.SetLeft(sprite, position.X - sprite.Height/2);
+            Canvas.SetTop(sprite, position.Y - sprite.Width/2);
         }
         public void Destroy()
         {
@@ -32,6 +32,11 @@ namespace KinectWPF.Node
         public Point GetPosition()
         {
             return position;
+        }
+
+        public float GetRadius()
+        {
+            return (float) sprite.Width/2;
         }
     }
 }
