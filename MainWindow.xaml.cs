@@ -13,38 +13,73 @@ namespace KinectWPF
 {
     public partial class MainWindow : Window
     {
+        public static float DeltaTime = 0;
+
+        public event Action OnUpdate;
+        public event Action OnGameStart;
+        public event Action OnGameOver;
+
         public Canvas MainCanvas { get; private set; }
         public Image KinectImage { get; private set; }
-        public static float DeltaTime = 0;
-        public event Action OnUpdate;
+
 
         private DispatcherTimer looper = new DispatcherTimer();
         private IInputController inputController;
         private const bool useMouse = true;
 
+        private const float gameTime = 30;
+        private float gameTimer;
+
+        private int score = 0;
+
         public MainWindow()
         {
             InitializeComponent();
             InitializeReferences();
-
-            MainCanvas.Focus();
-
             InitializeController();
+
+            NodeSpawner nodeSpawner = new NodeSpawner(this, inputController);
+            CompositionTarget.Rendering += MainLoop;
+
             InitializeGame();
         }
 
+
         private void InitializeGame()
         {
-            NodeSpawner nodeSpawner = new NodeSpawner(this, inputController);
-            StartMainThread();
+            EnableStartUI();
+
+            CompositionTarget.Rendering -= EndLoop;
+            CompositionTarget.Rendering += StartLoop;
         }
 
-        private void StartMainThread()
+        private void StartGame()
         {
-            CompositionTarget.Rendering += Loop;
+            OnGameStart.Invoke();
+
+            SetTime(gameTime);
+            SetScore(0);
+
+            EnableGameUI();
+
+            CompositionTarget.Rendering -= StartLoop;
+            CompositionTarget.Rendering += GameLoop;
         }
 
-        private void Loop(object sender, EventArgs e)
+        private void EndGame()
+        {
+            OnGameOver.Invoke();
+
+            UpdateEndScoreText();
+
+            EnableEndUI();
+
+            CompositionTarget.Rendering -= GameLoop;
+            CompositionTarget.Rendering += EndLoop;
+        }
+
+
+        private void MainLoop(object sender, EventArgs e)
         {
             DateTime start = DateTime.Now;
 
@@ -54,10 +89,119 @@ namespace KinectWPF
 
             TimeSpan span = DateTime.Now.Subtract(start);
 
-            DeltaTime = (float) span.TotalSeconds;
-
-            Trace.WriteLine(DeltaTime);
+            DeltaTime = (float)span.TotalSeconds;
         }
+
+        private void StartLoop(object sender, EventArgs e)
+        {
+            if (inputController.IsInStartPosition())
+            {
+                StartGame();
+            }
+        }
+
+
+        private void GameLoop(object sender, EventArgs e)
+        {
+            gameTimer -= DeltaTime;
+
+            UpdateGameTimerText();
+
+            if (ShouldGameEnd())
+            {
+                EndGame();
+            }
+        }
+
+        private void EndLoop(object sender, EventArgs e)
+        {
+            if (inputController.IsInStartPosition())
+            {
+                InitializeGame();
+            }
+        }
+
+        public void IncreaseScore()
+        {
+            score += 1;
+            UpdateScoreText();
+        }
+
+        private void SetScore(int score)
+        {
+            this.score = score;
+            UpdateScoreText();
+        }
+
+        private void SetTime(float time)
+        {
+            this.gameTimer = time;
+            UpdateScoreText();
+        }
+
+        private void UpdateGameTimerText()
+        {
+            TimeNumber.Content = ((int) gameTimer).ToString();
+        }
+
+        private void UpdateScoreText()
+        {
+            ScoreNumber.Content = score.ToString();
+        }
+
+        private void UpdateEndScoreText()
+        {
+            EndNumber.Content = score.ToString();
+        }
+
+        private void EnableStartUI()
+        {
+            Hide(ScoreText);
+            Hide(ScoreNumber);
+            Hide(TimeText);
+            Hide(TimeNumber);
+            Hide(EndNumber);
+            Hide(EndText);
+
+            Show(StartText);
+        }
+
+        private void EnableGameUI()
+        {
+            Hide(StartText);
+            Hide(EndText);
+            Hide(EndNumber);
+
+            Show(ScoreText);
+            Show(ScoreNumber);
+            Show(TimeText);
+            Show(TimeNumber);
+        }
+
+        private void EnableEndUI()
+        {
+            Hide(ScoreText);
+            Hide(ScoreNumber);
+            Hide(TimeText);
+            Hide(TimeNumber);
+            Hide(StartText);
+
+            Show(EndNumber);
+            Show(EndText);
+        }
+
+
+        private void Hide(UIElement element)
+        {
+            element.Visibility = Visibility.Hidden;
+        }
+
+        private void Show(UIElement element)
+        {
+            element.Visibility = Visibility.Visible;
+        }
+
+        private bool ShouldGameEnd() => gameTimer <= 0;
 
         private void InitializeReferences()
         {

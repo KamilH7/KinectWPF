@@ -33,6 +33,12 @@ namespace KinectWPF.Node
             this.mainWindow = mainWindow;
             this.inputController = inputController;
 
+            mainWindow.OnGameStart += GameStart;
+            mainWindow.OnGameOver += ClearNodes;
+        }
+
+        private void GameStart()
+        {
             mainWindow.OnUpdate += Update;
         }
 
@@ -79,6 +85,16 @@ namespace KinectWPF.Node
         private void RemoveNode(Node removedNode)
         {
             nodes.Remove(removedNode);
+        }
+
+        private void ClearNodes()
+        {
+            foreach(Node node in nodes)
+            {
+                node.Destroy();
+            }
+
+            nodes.Clear();
         }
 
         private void GenerateNodes(int nodeCount)

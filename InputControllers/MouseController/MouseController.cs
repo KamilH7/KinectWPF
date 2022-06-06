@@ -36,6 +36,20 @@ namespace KinectWPF.Controllers.MouseController
             return distance <= radius ? true : false;
         }
 
+        public bool IsInStartPosition()
+        {
+            Point mousePosition = GetMousePositionOnScreen();
+            Point middle = new Point(window.Width / 2, window.Height / 2);
+
+            bool isXOkay = mousePosition.X < middle.X + 50 && 
+                           mousePosition.X > middle.X - 50;
+
+            bool isYOkay = mousePosition.Y < middle.Y + 50 && 
+                           mousePosition.Y > middle.Y - 50;
+
+            return isXOkay && isYOkay;
+        }
+
         private void DrawPointer()
         {
             Point mousePosition = GetMousePositionOnScreen();

@@ -26,6 +26,7 @@ namespace KinectWPF.Node
         }
         public void Destroy()
         {
+            mainWindow.IncreaseScore();
             mainWindow.MainCanvas.Children.Remove(sprite);
         }
 

@@ -150,5 +150,10 @@ namespace KinectWPF.Controllers.KinectController
 
             return new Point(depthPoint.X, depthPoint.Y);
         }
+
+        public bool IsInStartPosition()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
