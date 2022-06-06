@@ -34,12 +34,18 @@ namespace KinectWPF.Node
             this.inputController = inputController;
 
             mainWindow.OnGameStart += GameStart;
-            mainWindow.OnGameOver += ClearNodes;
+            mainWindow.OnGameOver += GameEnd;
         }
 
         private void GameStart()
         {
             mainWindow.OnUpdate += Update;
+        }
+
+        private void GameEnd()
+        {
+            ClearNodes();
+            mainWindow.OnUpdate -= Update;
         }
 
         private void Update()
@@ -69,8 +75,6 @@ namespace KinectWPF.Node
                 GenerateNodes(1);
 
                 currentSpawnTimer = 0;
-
-                Trace.WriteLine(MainWindow.DeltaTime);
             }
         }
 

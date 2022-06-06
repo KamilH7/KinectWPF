@@ -89,7 +89,7 @@ namespace KinectWPF
 
             TimeSpan span = DateTime.Now.Subtract(start);
 
-            DeltaTime = (float)span.TotalSeconds;
+            DeltaTime = (float) span.TotalSeconds*5;
         }
 
         private void StartLoop(object sender, EventArgs e)
