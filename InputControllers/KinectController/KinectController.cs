@@ -1,4 +1,6 @@
-﻿using Microsoft.Kinect;
+﻿using KinectWPF.InputControllers;
+using Microsoft.Kinect;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
@@ -8,28 +10,36 @@ namespace KinectWPF.Controllers.KinectController
 {
     class KinectController : IInputController
     {
-        private MainWindow window;
-        private Rectangle leftHandImage;
-        private Rectangle rightHandImage;
+        private MainWindow mainWindnow;
         private KinectSensor kinect = KinectSensor.KinectSensors[0];
         private readonly Pen skeletonPen = new Pen(Brushes.White, 6);
         private DrawingImage imageSource;
         private DrawingGroup drawingGroup;
+        private Skeleton[] skeletons;
+        private List<HandPointer> handPointers;
 
-        public KinectController()
+        public KinectController(MainWindow mainWindow)
         {
-             
+            this.mainWindnow = mainWindow;
         }
 
 
         public bool IsHoveringOver(Point point, float radius)
         {
-            return false;
+            foreach(Skeleton skeleton in skeletons)
+            {
+                if (!GestureDetected(skeleton))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         public void Initialize(MainWindow window)
         {
-            this.window = window;
+            this.mainWindnow = window;
             KinectStart();
         }
 
@@ -37,7 +47,7 @@ namespace KinectWPF.Controllers.KinectController
         {
             drawingGroup = new DrawingGroup();
             imageSource = new DrawingImage(drawingGroup);
-            window.KinectImage.Source = imageSource;
+            mainWindnow.KinectImage.Source = imageSource;
 
             if (kinect.Status == KinectStatus.Connected)
             {
@@ -57,9 +67,46 @@ namespace KinectWPF.Controllers.KinectController
                 {
                     skeletons = new Skeleton[skeletonframe.SkeletonArrayLength];
                     skeletonframe.CopySkeletonDataTo(skeletons);
-                    DrawSkeletons(skeletons);
+                    this.skeletons = skeletons;
                 }
             }
+
+            DrawSkeletonHands();
+        }
+
+        private void DrawSkeletonHands()
+        {
+            DestroyCurrentHands();
+
+            foreach(Skeleton skeleton in skeletons)
+            {
+                GenerateSkeletonHands(skeleton);
+            }
+        }
+
+        private void DestroyCurrentHands()
+        {
+            if(handPointers != null)
+            {
+                foreach(HandPointer handPointer in handPointers)
+                {
+                    handPointer.Destroy();
+                }
+            }
+        }
+
+        private void GenerateSkeletonHands(Skeleton skeleton)
+        {
+            SkeletonPoint LeftHandPosition = skeleton.Joints[JointType.HandLeft].Position;
+            SkeletonPoint rightHandPosition = skeleton.Joints[JointType.HandRight].Position;
+
+            HandPointer leftHand = new HandPointer(mainWindnow, HandSide.Left);
+            leftHand.SetPosition(SkeletonPointToScreen(LeftHandPosition));
+            handPointers.Add(leftHand);
+
+            HandPointer rightHand = new HandPointer(mainWindnow, HandSide.Right);
+            leftHand.SetPosition(SkeletonPointToScreen(rightHandPosition));
+            handPointers.Add(rightHand);
         }
 
         private void DrawSkeletons(Skeleton[] skeletons)
@@ -77,6 +124,7 @@ namespace KinectWPF.Controllers.KinectController
                 }
             }
         }
+
 
         private void DrawSkeleton(Skeleton skeleton, DrawingContext drawingContext)
         {
@@ -111,7 +159,7 @@ namespace KinectWPF.Controllers.KinectController
             var RE = skeleton.Joints[JointType.ElbowRight].Position;
             var RH = skeleton.Joints[JointType.HandRight].Position;
 
-            if ((LS.Y > LE.Y)
+            if (   (LS.Y > LE.Y)
                 && (LH.Y > LS.Y)
                 && (LS.X > LE.X)
                 && (LS.X > LH.X)

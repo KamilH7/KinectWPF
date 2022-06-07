@@ -23,8 +23,6 @@ namespace KinectWPF
         public Canvas MainCanvas { get; private set; }
         public Image KinectImage { get; private set; }
 
-
-        private DispatcherTimer looper = new DispatcherTimer();
         private IInputController inputController;
         private const bool useMouse = true;
 
@@ -221,7 +219,7 @@ namespace KinectWPF
             }
             else
             {
-                inputController = new KinectController();
+                inputController = new KinectController(this);
             }
 
             inputController.Initialize(this);
