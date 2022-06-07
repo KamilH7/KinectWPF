@@ -14,6 +14,7 @@ namespace KinectWPF
     public partial class MainWindow : Window
     {
         public static float DeltaTime = 0;
+        private DateTime previousFrameTime;
 
         public event Action OnUpdate;
         public event Action OnGameStart;
@@ -78,18 +79,21 @@ namespace KinectWPF
             CompositionTarget.Rendering += EndLoop;
         }
 
-
         private void MainLoop(object sender, EventArgs e)
         {
-            DateTime start = DateTime.Now;
+            if(previousFrameTime == null)
+            {
+                previousFrameTime = DateTime.Now;
+                DeltaTime = 0;
+            }
+            else
+            {
+                TimeSpan span = DateTime.Now.Subtract(previousFrameTime);
+                DeltaTime = (float) span.TotalSeconds;
+                previousFrameTime = DateTime.Now;
+            }
 
             OnUpdate?.Invoke();
-
-            Thread.Sleep(1);
-
-            TimeSpan span = DateTime.Now.Subtract(start);
-
-            DeltaTime = (float) span.TotalSeconds*5;
         }
 
         private void StartLoop(object sender, EventArgs e)
