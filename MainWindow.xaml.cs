@@ -213,11 +213,11 @@ namespace KinectWPF
         {
             if (useMouse)
             {
-                inputController = new MouseController(leftHand,this);
+                inputController = new MouseController(this);
             }
             else
             {
-                inputController = new KinectController(leftHand,rightHand);
+                inputController = new KinectController();
             }
 
             inputController.Initialize(this);

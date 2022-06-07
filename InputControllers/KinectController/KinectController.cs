@@ -16,11 +16,11 @@ namespace KinectWPF.Controllers.KinectController
         private DrawingImage imageSource;
         private DrawingGroup drawingGroup;
 
-        public KinectController(Rectangle leftHandImage, Rectangle rightHandImage)
+        public KinectController()
         {
-            this.leftHandImage = leftHandImage;
-            this.rightHandImage = rightHandImage;
+             
         }
+
 
         public bool IsHoveringOver(Point point, float radius)
         {

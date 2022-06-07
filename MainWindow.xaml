@@ -19,18 +19,6 @@
             <Canvas.Background>
                 <ImageBrush ImageSource=".\Resources\Background.jpg" />
             </Canvas.Background>
-
-            <Rectangle x:Name="leftHand" Width="50" Height="50" Canvas.Left="0" Canvas.Top="0" Visibility="Hidden">
-                <Rectangle.Fill>
-                    <ImageBrush ImageSource="Resources/hand_icon_left.png" Stretch="Uniform"/>
-                </Rectangle.Fill>
-            </Rectangle>
-
-            <Rectangle x:Name="rightHand" Width="50" Height="50" Canvas.Left="50" Canvas.Top="0" Visibility="Hidden">
-                <Rectangle.Fill>
-                    <ImageBrush ImageSource="Resources/hand_icon_right.png" Stretch="Uniform"/>
-                </Rectangle.Fill>
-            </Rectangle>
         </Canvas>
 
         <Label Panel.ZIndex="1" x:Name="StartText" Content="PRZYGOTUJ SIE!" Padding="10" VerticalAlignment="Center" FontSize="80" BorderThickness="0" RenderTransformOrigin="1.378,0.644" Margin="90,10,68,334" Foreground="White" Grid.Row="2" Height="143" Width="634" HorizontalAlignment="Center" FontFamily="Stencil" Grid.ColumnSpan="2" Visibility="Hidden"/>

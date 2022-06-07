@@ -1,22 +1,20 @@
 ﻿using KinectWPF.Controllers.KinectController;
+using KinectWPF.InputControllers;
 using System;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Shapes;
 
 namespace KinectWPF.Controllers.MouseController
 {
     class MouseController : IInputController
     {
-        private Rectangle handImage;
+        private HandPointer handImage;
         private MainWindow window;
 
-        public MouseController(Rectangle handImage, MainWindow mainWindow)
+        public MouseController(MainWindow mainWindow)
         {
-            this.handImage = handImage;
-            handImage.Visibility = Visibility.Visible;
+            handImage = new HandPointer(mainWindow, HandSide.Left);
             mainWindow.OnUpdate += DrawPointer;
         }
 
@@ -52,9 +50,7 @@ namespace KinectWPF.Controllers.MouseController
 
         private void DrawPointer()
         {
-            Point mousePosition = GetMousePositionOnScreen();
-            Canvas.SetTop(handImage, mousePosition.Y - handImage.Height / 2);
-            Canvas.SetLeft(handImage, mousePosition.X - handImage.Width / 2);
+            handImage.SetPosition(GetMousePositionOnScreen());
         }
 
         private Point GetMousePositionOnScreen()
