@@ -96,6 +96,8 @@ namespace KinectWPF.Controllers.KinectController
                     handPointer.Destroy();
                 }
             }
+
+            handPointers.Clear();
         }
 
         private void GenerateSkeletonHands(Skeleton skeleton)

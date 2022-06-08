@@ -78,7 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Node\Node.cs" />
-    <Compile Include="Node\NodeSpawner.cs" />
+    <Compile Include="Node\NodeController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

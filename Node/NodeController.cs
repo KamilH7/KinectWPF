@@ -3,7 +3,6 @@ using KinectWPF.Enums;
 using KinectWPF.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
@@ -13,7 +12,7 @@ using System.Windows.Shapes;
 
 namespace KinectWPF.Node
 {
-    class NodeSpawner
+    class NodeController
     {
         Dictionary<int, Uri> FruitImages = new Dictionary<int, Uri>()
             {
@@ -24,11 +23,11 @@ namespace KinectWPF.Node
 
         private IInputController inputController;
         private MainWindow mainWindow;
-        private const float spawnTimer = 1f;
+        private const float spawnTimer = 2f;
         private float currentSpawnTimer;
         private List<Node> nodes = new List<Node>();
 
-        public NodeSpawner(MainWindow mainWindow, IInputController inputController)
+        public NodeController(MainWindow mainWindow, IInputController inputController)
         {
             this.mainWindow = mainWindow;
             this.inputController = inputController;
@@ -44,7 +43,6 @@ namespace KinectWPF.Node
 
         private void GameEnd()
         {
-            ClearNodes();
             mainWindow.OnUpdate -= Update;
         }
 
@@ -61,7 +59,7 @@ namespace KinectWPF.Node
                 if (inputController.IsHoveringOver(nodes[i].GetPosition(),nodes[i].GetRadius()))
                 {
                     nodes[i].Destroy();
-                    RemoveNode(nodes[i]);
+                    mainWindow.IncreaseScore();
                 }
             }
         }
@@ -83,22 +81,14 @@ namespace KinectWPF.Node
             if (!nodes.Exists((node) => { return node == newNode; }))
             {
                 nodes.Add(newNode);
+                newNode.OnDestroy += RemoveNode;
             }
         }
 
         private void RemoveNode(Node removedNode)
         {
+            removedNode.OnDestroy -= RemoveNode;
             nodes.Remove(removedNode);
-        }
-
-        private void ClearNodes()
-        {
-            foreach(Node node in nodes)
-            {
-                node.Destroy();
-            }
-
-            nodes.Clear();
         }
 
         private void GenerateNodes(int nodeCount)

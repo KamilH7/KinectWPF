@@ -34,7 +34,7 @@ namespace KinectWPF
             InitializeReferences();
             InitializeController();
 
-            NodeSpawner nodeSpawner = new NodeSpawner(this, inputController);
+            NodeController nodeSpawner = new NodeController(this, inputController);
             CompositionTarget.Rendering += MainLoop;
 
             InitializeGame();
@@ -91,14 +91,20 @@ namespace KinectWPF
             OnUpdate?.Invoke();
         }
 
+        private float startScreenMinTime = 2f;
+        private float starScreenTimer = 0;
         private void StartLoop(object sender, EventArgs e)
         {
-            if (inputController.IsInStartPosition())
+            if (starScreenTimer < startScreenMinTime)
             {
+                starScreenTimer += DeltaTime;
+            }
+            else if (inputController.IsInStartPosition())
+            {
+                starScreenTimer = 0;
                 StartGame();
             }
         }
-
 
         private void GameLoop(object sender, EventArgs e)
         {
@@ -111,7 +117,6 @@ namespace KinectWPF
                 EndGame();
             }
         }
-
         private void EndLoop(object sender, EventArgs e)
         {
             if (inputController.IsInStartPosition())
