@@ -1,6 +1,5 @@
 ﻿using KinectWPF.Controllers.KinectController;
 using KinectWPF.Enums;
-using KinectWPF.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,11 +20,13 @@ namespace KinectWPF.Node
                 {  (int)FruitTypeEnum.APPLE, new Uri(string.Concat(@"pack://application:,,,/",Assembly.GetExecutingAssembly().GetName().Name,@";component/",@"Resources/FruitImages/apple.png"), UriKind.Absolute) }
             };
 
+        private float nodeRadius = 50;
         private IInputController inputController;
         private MainWindow mainWindow;
         private const float spawnTimer = 2f;
         private float currentSpawnTimer;
         private List<Node> nodes = new List<Node>();
+        private Random random;
 
         public NodeController(MainWindow mainWindow, IInputController inputController)
         {
@@ -34,6 +35,8 @@ namespace KinectWPF.Node
 
             mainWindow.OnGameStart += GameStart;
             mainWindow.OnGameOver += GameEnd;
+
+            random = new Random();
         }
 
         private void GameStart()
@@ -56,7 +59,7 @@ namespace KinectWPF.Node
         {
             for (int i = nodes.Count - 1; i >= 0; i--)
             {
-                if (inputController.IsHoveringOver(nodes[i].GetPosition(),nodes[i].GetRadius()))
+                if (inputController.IsHoveringOver(nodes[i].GetPosition(),nodeRadius))
                 {
                     nodes[i].Destroy();
                     mainWindow.IncreaseScore();
@@ -70,7 +73,7 @@ namespace KinectWPF.Node
 
             if (currentSpawnTimer >= spawnTimer)
             {
-                GenerateNodes(1);
+                GenerateNodes(2);
 
                 currentSpawnTimer = 0;
             }
@@ -93,10 +96,15 @@ namespace KinectWPF.Node
 
         private void GenerateNodes(int nodeCount)
         {
-            Random rnd = new Random();
-
             for (int i = 0; i < nodeCount; ++i)
             {
+                Point randomPosition;
+
+                do
+                {
+                    randomPosition = GetRandomPosition();
+                } while (inputController.IsHoveringOver(randomPosition,nodeRadius));
+
                 Node newNode = new Node(mainWindow, GetRandomImage(), GetRandomPosition());
                 AddNode(newNode);
             }
@@ -104,11 +112,8 @@ namespace KinectWPF.Node
 
         private Point GetRandomPosition()
         {
-
-            Random rnd = new Random();
-
-            double r = mainWindow.Width/2.5f * Math.Sqrt(rnd.NextDouble());
-            double theta = rnd.NextDouble() * 2 * Math.PI;
+            double r = mainWindow.Width/2.5f * Math.Sqrt(random.NextDouble());
+            double theta = random.NextDouble() * 2 * Math.PI;
             double x = mainWindow.Width / 2 + r * Math.Cos(theta);
             double y = mainWindow.Height / 2 + r * Math.Sin(theta);
 
@@ -118,15 +123,15 @@ namespace KinectWPF.Node
         private Rectangle GetRandomImage()
         {
             ImageBrush fruitBrush = new ImageBrush();
-            int randomNumber = RandomHelper.GenerateRandomFruitType();
+            int randomNumber = random.Next(0, FruitImages.Count);
 
             fruitBrush.ImageSource = new BitmapImage(FruitImages.FirstOrDefault(f => f.Key == randomNumber).Value);
 
             var fruit = new Rectangle()
             {
                 Tag = "Fruit",
-                Height = 110,
-                Width = 110,
+                Height = nodeRadius * 2,
+                Width = nodeRadius * 2,
                 Fill = fruitBrush
             };
 

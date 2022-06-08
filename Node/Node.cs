@@ -54,10 +54,5 @@ namespace KinectWPF.Node
         {
             return position;
         }
-
-        public float GetRadius()
-        {
-            return (float) sprite.Width/2;
-        }
     }
 }
