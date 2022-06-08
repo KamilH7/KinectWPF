@@ -114,11 +114,15 @@ namespace KinectWPF.Node
 
         private Point GetRandomPosition()
         {
+
             Random rnd = new Random();
 
-            Point point = new Point(rnd.Next(0, (int)mainWindow.Width), rnd.Next(0, (int)mainWindow.Height));
+            double r = mainWindow.Width/2.5f * Math.Sqrt(rnd.NextDouble());
+            double theta = rnd.NextDouble() * 2 * Math.PI;
+            double x = mainWindow.Width / 2 + r * Math.Cos(theta);
+            double y = mainWindow.Height / 2 + r * Math.Sin(theta);
 
-            return point;
+            return new Point(x,y);
         }
 
         private Rectangle GetRandomImage()

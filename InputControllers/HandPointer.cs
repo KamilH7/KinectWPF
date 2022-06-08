@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -20,6 +16,9 @@ namespace KinectWPF.InputControllers
 
     class HandPointer
     {
+
+        private Point position;
+
         private MainWindow mainWindow;
         private Uri leftHandImage = new Uri(string.Concat(@"pack://application:,,,/", Assembly.GetExecutingAssembly().GetName().Name, @";component/", @"Resources/hand_icon_left.png"), UriKind.Absolute);
         private Uri rightHandImage = new Uri(string.Concat(@"pack://application:,,,/", Assembly.GetExecutingAssembly().GetName().Name, @";component/", @"Resources/hand_icon_right.png"), UriKind.Absolute);
@@ -44,8 +43,18 @@ namespace KinectWPF.InputControllers
 
         public void SetPosition(Point position)
         {
+            this.position = position;
+
             Canvas.SetLeft(hand, position.X - hand.Width / 2);
             Canvas.SetTop(hand, position.Y - hand.Height / 2);
+        }
+
+        public bool IsHoveringOver(Point point, float radius)
+        {
+            double sqrDistance = Math.Pow(point.X - position.X, 2) + Math.Pow(point.Y - position.Y, 2);
+            double distance = Math.Sqrt(sqrDistance);
+
+            return distance <= radius + hand.Width/4 ? true : false;
         }
 
         public void Destroy()

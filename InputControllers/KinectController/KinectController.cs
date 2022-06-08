@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using System.Windows.Shapes;
 
 namespace KinectWPF.Controllers.KinectController
 {
@@ -16,7 +15,7 @@ namespace KinectWPF.Controllers.KinectController
         private DrawingImage imageSource;
         private DrawingGroup drawingGroup;
         private Skeleton[] skeletons;
-        private List<HandPointer> handPointers;
+        private List<HandPointer> handPointers = new List<HandPointer>();
 
         public KinectController(MainWindow mainWindow)
         {
@@ -26,15 +25,15 @@ namespace KinectWPF.Controllers.KinectController
 
         public bool IsHoveringOver(Point point, float radius)
         {
-            foreach(Skeleton skeleton in skeletons)
+            foreach(HandPointer handPointer in handPointers)
             {
-                if (!GestureDetected(skeleton))
+                if (handPointer.IsHoveringOver(point,radius))
                 {
-                    return false;
+                    return true;
                 }
             }
 
-            return true;
+            return false;
         }
 
         public void Initialize(MainWindow window)
@@ -68,6 +67,7 @@ namespace KinectWPF.Controllers.KinectController
                     skeletons = new Skeleton[skeletonframe.SkeletonArrayLength];
                     skeletonframe.CopySkeletonDataTo(skeletons);
                     this.skeletons = skeletons;
+                    //DrawSkeletons(skeletons);
                 }
             }
 
@@ -76,11 +76,14 @@ namespace KinectWPF.Controllers.KinectController
 
         private void DrawSkeletonHands()
         {
-            DestroyCurrentHands();
-
-            foreach(Skeleton skeleton in skeletons)
+            if (skeletons != null && skeletons.Length > 0)
             {
-                GenerateSkeletonHands(skeleton);
+                DestroyCurrentHands();
+
+                foreach (Skeleton skeleton in skeletons)
+                {
+                    GenerateSkeletonHands(skeleton);
+                }
             }
         }
 
@@ -97,16 +100,31 @@ namespace KinectWPF.Controllers.KinectController
 
         private void GenerateSkeletonHands(Skeleton skeleton)
         {
-            SkeletonPoint LeftHandPosition = skeleton.Joints[JointType.HandLeft].Position;
-            SkeletonPoint rightHandPosition = skeleton.Joints[JointType.HandRight].Position;
+            SkeletonPoint LeftHand = skeleton.Joints[JointType.HandLeft].Position;
+            SkeletonPoint RightHand= skeleton.Joints[JointType.HandRight].Position;
 
-            HandPointer leftHand = new HandPointer(mainWindnow, HandSide.Left);
-            leftHand.SetPosition(SkeletonPointToScreen(LeftHandPosition));
-            handPointers.Add(leftHand);
+            Point rightHandPosition = SkeletonPointToScreen(RightHand);
+            Point leftHandPosition = SkeletonPointToScreen(LeftHand);
 
-            HandPointer rightHand = new HandPointer(mainWindnow, HandSide.Right);
-            leftHand.SetPosition(SkeletonPointToScreen(rightHandPosition));
-            handPointers.Add(rightHand);
+            if (IsPositionOnScreen(leftHandPosition))
+            {
+                HandPointer leftHand = new HandPointer(mainWindnow, HandSide.Left);
+                leftHand.SetPosition(leftHandPosition);
+                handPointers.Add(leftHand);
+            }
+
+
+            if (IsPositionOnScreen(rightHandPosition))
+            {
+                HandPointer rightHand = new HandPointer(mainWindnow, HandSide.Right);
+                rightHand.SetPosition(rightHandPosition);
+                handPointers.Add(rightHand);
+            }
+        }
+
+        private bool IsPositionOnScreen(Point point)
+        {
+            return point.X > 0 && point.X < mainWindnow.Height && point.Y > 0 && point.Y < mainWindnow.Width;
         }
 
         private void DrawSkeletons(Skeleton[] skeletons)
@@ -201,7 +219,20 @@ namespace KinectWPF.Controllers.KinectController
 
         public bool IsInStartPosition()
         {
-            throw new System.NotImplementedException();
+            if(skeletons == null)
+            {
+                return false;
+            }
+
+            foreach(Skeleton skeleton in skeletons)
+            {
+                if (GestureDetected(skeleton))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

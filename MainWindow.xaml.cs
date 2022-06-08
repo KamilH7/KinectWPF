@@ -2,12 +2,9 @@
 using KinectWPF.Controllers.MouseController;
 using KinectWPF.Node;
 using System;
-using System.Diagnostics;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Threading;
 
 namespace KinectWPF
 {
@@ -24,7 +21,7 @@ namespace KinectWPF
         public Image KinectImage { get; private set; }
 
         private IInputController inputController;
-        private const bool useMouse = true;
+        private const bool useMouse = false;
 
         private const float gameTime = 30;
         private float gameTimer;

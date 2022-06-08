@@ -9,12 +9,12 @@ namespace KinectWPF.Controllers.MouseController
 {
     class MouseController : IInputController
     {
-        private HandPointer handImage;
+        private HandPointer handPointer;
         private MainWindow window;
 
         public MouseController(MainWindow mainWindow)
         {
-            handImage = new HandPointer(mainWindow, HandSide.Left);
+            handPointer = new HandPointer(mainWindow, HandSide.Left);
             mainWindow.OnUpdate += DrawPointer;
         }
 
@@ -26,12 +26,7 @@ namespace KinectWPF.Controllers.MouseController
 
         public bool IsHoveringOver(Point point, float radius)
         {
-            Point mousePosition = GetMousePositionOnScreen();
-
-            double sqrDistance = Math.Pow(point.X - mousePosition.X, 2) + Math.Pow(point.Y - mousePosition.Y, 2);
-            double distance = Math.Sqrt(sqrDistance);
-
-            return distance <= radius ? true : false;
+            return handPointer.IsHoveringOver(point, radius);
         }
 
         public bool IsInStartPosition()
@@ -50,7 +45,7 @@ namespace KinectWPF.Controllers.MouseController
 
         private void DrawPointer()
         {
-            handImage.SetPosition(GetMousePositionOnScreen());
+            handPointer.SetPosition(GetMousePositionOnScreen());
         }
 
         private Point GetMousePositionOnScreen()
