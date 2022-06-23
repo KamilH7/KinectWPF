@@ -1,9 +1,4 @@
 ﻿using KinectWPF.Controllers.KinectController;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace KinectWPF.Calibration
@@ -68,14 +63,14 @@ namespace KinectWPF.Calibration
             mainWindow.OnUpdate -= LookForSamplePosition;
             mainWindow.OnUpdate += Await;
 
-            bottomRightPosition = inputController.GetPosition();
+            bottomRightPosition = inputController.GetCalibrationPosition(CalibrationStage.BottomRightData);
         }
 
         private void SampleTopLeftData()
         {
             mainWindow.OnUpdate -= LookForSamplePosition;
 
-            topLeftPosition = inputController.GetPosition();
+            topLeftPosition = inputController.GetCalibrationPosition(CalibrationStage.TopLeftData);
 
             IsCallibrating = false;
         }

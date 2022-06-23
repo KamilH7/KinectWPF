@@ -1,4 +1,5 @@
-﻿using KinectWPF.Controllers.KinectController;
+﻿using KinectWPF.Calibration;
+using KinectWPF.Controllers.KinectController;
 using KinectWPF.Controllers.MouseController;
 using KinectWPF.Node;
 using System;
@@ -21,8 +22,9 @@ namespace KinectWPF
         public Image KinectImage { get; private set; }
 
         private IInputController inputController;
-        private const bool useMouse = false;
+        private PointTransformer pointTransformer;
 
+        private const bool useMouse = true;
         private const float gameTime = 30;
         private float gameTimer;
 
@@ -32,9 +34,13 @@ namespace KinectWPF
         {
             InitializeComponent();
             InitializeReferences();
+
+            pointTransformer = new PointTransformer(this);
+
             InitializeController();
 
             NodeController nodeSpawner = new NodeController(this, inputController);
+
             CompositionTarget.Rendering += MainLoop;
 
             InitializeGame();
@@ -224,7 +230,7 @@ namespace KinectWPF
                 inputController = new KinectController(this);
             }
 
-            inputController.Initialize(this);
+            inputController.Initialize(this, pointTransformer);
         }
 
     }

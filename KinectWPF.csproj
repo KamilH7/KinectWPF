@@ -65,6 +65,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Calibration\PointTransformer.cs" />
+    <Compile Include="Calibration\CalibrationStage.cs" />
     <Compile Include="Enums\FruitTypeEnum.cs" />
     <Compile Include="InputControllers\HandPointer.cs" />
     <Compile Include="InputControllers\IInputController.cs" />
