@@ -17,7 +17,7 @@ namespace KinectWPF.InputControllers
     class HandPointer
     {
 
-        private Point position;
+        public Point position { get; private set; }
 
         private MainWindow mainWindow;
         private Uri leftHandImage = new Uri(string.Concat(@"pack://application:,,,/", Assembly.GetExecutingAssembly().GetName().Name, @";component/", @"Resources/hand_icon_left.png"), UriKind.Absolute);

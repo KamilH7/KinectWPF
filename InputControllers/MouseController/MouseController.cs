@@ -1,4 +1,5 @@
-﻿using KinectWPF.Controllers.KinectController;
+﻿using KinectWPF.Calibration;
+using KinectWPF.Controllers.KinectController;
 using KinectWPF.InputControllers;
 using System;
 using System.Windows;
@@ -11,6 +12,7 @@ namespace KinectWPF.Controllers.MouseController
     {
         private HandPointer handPointer;
         private MainWindow window;
+        private PointTransformer pointTransformer;
 
         public MouseController(MainWindow mainWindow)
         {
@@ -18,15 +20,26 @@ namespace KinectWPF.Controllers.MouseController
             mainWindow.OnUpdate += DrawPointer;
         }
 
-        public void Initialize(MainWindow window)
+        public Point GetCalibrationPosition(CalibrationStage calibrationStage)
+        {
+            return handPointer.position;
+        }
+
+        public void Initialize(MainWindow window, PointTransformer pointTransformer)
         {
             this.window = window;
+            this.pointTransformer = pointTransformer;
             window.OnUpdate += DrawPointer;
         }
 
         public bool IsHoveringOver(Point point, float radius)
         {
             return handPointer.IsHoveringOver(point, radius);
+        }
+
+        public bool IsInSamplePosition()
+        {
+            return Mouse.LeftButton == MouseButtonState.Pressed;
         }
 
         public bool IsInStartPosition()
@@ -45,7 +58,7 @@ namespace KinectWPF.Controllers.MouseController
 
         private void DrawPointer()
         {
-            handPointer.SetPosition(GetMousePositionOnScreen());
+            handPointer.SetPosition(pointTransformer.TransformPoint(GetMousePositionOnScreen()));
         }
 
         private Point GetMousePositionOnScreen()

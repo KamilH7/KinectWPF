@@ -1,5 +1,7 @@
-﻿using KinectWPF.InputControllers;
+﻿using KinectWPF.Calibration;
+using KinectWPF.InputControllers;
 using Microsoft.Kinect;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -16,6 +18,7 @@ namespace KinectWPF.Controllers.KinectController
         private DrawingGroup drawingGroup;
         private Skeleton[] skeletons;
         private List<HandPointer> handPointers = new List<HandPointer>();
+        private PointTransformer pointTransformer;
 
         public KinectController(MainWindow mainWindow)
         {
@@ -36,8 +39,9 @@ namespace KinectWPF.Controllers.KinectController
             return false;
         }
 
-        public void Initialize(MainWindow window)
+        public void Initialize(MainWindow window, PointTransformer pointTransformer)
         {
+            this.pointTransformer = pointTransformer;
             this.mainWindnow = window;
             KinectStart();
         }
@@ -103,7 +107,7 @@ namespace KinectWPF.Controllers.KinectController
         private void GenerateSkeletonHands(Skeleton skeleton)
         {
             SkeletonPoint LeftHand = skeleton.Joints[JointType.HandLeft].Position;
-            SkeletonPoint RightHand= skeleton.Joints[JointType.HandRight].Position;
+            SkeletonPoint RightHand = skeleton.Joints[JointType.HandRight].Position;
 
             Point rightHandPosition = SkeletonPointToScreen(RightHand);
             Point leftHandPosition = SkeletonPointToScreen(LeftHand);
@@ -111,7 +115,7 @@ namespace KinectWPF.Controllers.KinectController
             if (IsPositionOnScreen(leftHandPosition))
             {
                 HandPointer leftHand = new HandPointer(mainWindnow, HandSide.Left);
-                leftHand.SetPosition(leftHandPosition);
+                leftHand.SetPosition(pointTransformer.TransformPoint(leftHandPosition));
                 handPointers.Add(leftHand);
             }
 
@@ -119,7 +123,7 @@ namespace KinectWPF.Controllers.KinectController
             if (IsPositionOnScreen(rightHandPosition))
             {
                 HandPointer rightHand = new HandPointer(mainWindnow, HandSide.Right);
-                rightHand.SetPosition(rightHandPosition);
+                rightHand.SetPosition(pointTransformer.TransformPoint(rightHandPosition));
                 handPointers.Add(rightHand);
             }
         }
@@ -133,7 +137,7 @@ namespace KinectWPF.Controllers.KinectController
         {
             using (DrawingContext dc = drawingGroup.Open())
             {
-                dc.DrawRectangle((GestureDetected(skeletons.First()) == true) ? Brushes.Red : Brushes.Black, null, new Rect(0.0, 0.0, 800, 800));
+                dc.DrawRectangle((StartGestureDetected(skeletons.First()) == true) ? Brushes.Red : Brushes.Black, null, new Rect(0.0, 0.0, 800, 800));
 
                 foreach (Skeleton skel in skeletons)
                 {
@@ -169,7 +173,7 @@ namespace KinectWPF.Controllers.KinectController
             DrawBone(skeleton, drawingContext, JointType.AnkleRight, JointType.FootRight);
         }
 
-        private bool GestureDetected(Skeleton skeleton)
+        private bool StartGestureDetected(Skeleton skeleton)
         {
             var LS = skeleton.Joints[JointType.ShoulderLeft].Position;
             var LE = skeleton.Joints[JointType.ElbowLeft].Position;
@@ -228,13 +232,87 @@ namespace KinectWPF.Controllers.KinectController
 
             foreach(Skeleton skeleton in skeletons)
             {
-                if (GestureDetected(skeleton))
+                if (StartGestureDetected(skeleton))
                 {
                     return true;
                 }
             }
 
             return false;
+        }
+
+        public bool IsInSamplePosition()
+        {
+            if (skeletons == null)
+            {
+                return false;
+            }
+
+            foreach (Skeleton skeleton in skeletons)
+            {
+                if (SampleGestureDetected(skeleton))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool SampleGestureDetected(Skeleton skeleton)
+        {
+            var LH = skeleton.Joints[JointType.HandLeft].Position;
+            var RH = skeleton.Joints[JointType.HandRight].Position;
+            var B = skeleton.Joints[JointType.Head].Position;
+
+
+            if ((LH.X < B.X && RH.X < B.X) || (LH.X > B.X && RH.X > B.X))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public Point GetCalibrationPosition(CalibrationStage calibrationStage)
+        {
+            switch (calibrationStage)
+            {
+                case CalibrationStage.TopLeftData:
+                    return GetMostTopLeftPoint();
+                case CalibrationStage.BottomRightData:
+                    return GetMostBottomRightPoint();
+                default:
+                    return new Point();
+            }
+        }
+
+        private Point GetMostBottomRightPoint()
+        {
+            double bottomMostPosition = handPointers[0].position.Y;
+            double rightMostPosition = handPointers[0].position.X;
+
+            foreach(HandPointer pointer in handPointers)
+            {
+                bottomMostPosition = Math.Max(bottomMostPosition, pointer.position.Y);
+                rightMostPosition = Math.Max(rightMostPosition, pointer.position.X);
+            }
+
+            return new Point(rightMostPosition, bottomMostPosition);
+        }
+
+        private Point GetMostTopLeftPoint()
+        {
+            double topMostPosition = handPointers[0].position.Y;
+            double leftMostPosition = handPointers[0].position.X;
+
+            foreach (HandPointer pointer in handPointers)
+            {
+                topMostPosition = Math.Min(topMostPosition, pointer.position.Y);
+                leftMostPosition = Math.Min(leftMostPosition, pointer.position.X);
+            }
+
+            return new Point(leftMostPosition, topMostPosition);
         }
     }
 }

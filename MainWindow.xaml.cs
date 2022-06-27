@@ -1,4 +1,5 @@
-﻿using KinectWPF.Controllers.KinectController;
+﻿using KinectWPF.Calibration;
+using KinectWPF.Controllers.KinectController;
 using KinectWPF.Controllers.MouseController;
 using KinectWPF.Node;
 using System;
@@ -17,12 +18,14 @@ namespace KinectWPF
         public event Action OnGameStart;
         public event Action OnGameOver;
 
+        public Label MainText{ get; private set; }
         public Canvas MainCanvas { get; private set; }
         public Image KinectImage { get; private set; }
 
         private IInputController inputController;
-        private const bool useMouse = false;
+        private PointTransformer pointTransformer;
 
+        private const bool useMouse = false;
         private const float gameTime = 30;
         private float gameTimer;
 
@@ -32,9 +35,15 @@ namespace KinectWPF
         {
             InitializeComponent();
             InitializeReferences();
+
+            pointTransformer = new PointTransformer(this);
+
             InitializeController();
 
+            pointTransformer.StartCalibration(inputController);
+
             NodeController nodeSpawner = new NodeController(this, inputController);
+
             CompositionTarget.Rendering += MainLoop;
 
             InitializeGame();
@@ -99,7 +108,7 @@ namespace KinectWPF
             {
                 starScreenTimer += DeltaTime;
             }
-            else if (inputController.IsInStartPosition())
+            else if (inputController.IsInStartPosition() && !pointTransformer.IsCallibrating)
             {
                 starScreenTimer = 0;
                 StartGame();
@@ -209,6 +218,7 @@ namespace KinectWPF
 
         private void InitializeReferences()
         {
+            MainText = StartText;
             MainCanvas = canvas;
             KinectImage = kinectImage;
         }
@@ -224,7 +234,7 @@ namespace KinectWPF
                 inputController = new KinectController(this);
             }
 
-            inputController.Initialize(this);
+            inputController.Initialize(this, pointTransformer);
         }
 
     }
