@@ -107,15 +107,15 @@ namespace KinectWPF.Controllers.KinectController
         private void GenerateSkeletonHands(Skeleton skeleton)
         {
             SkeletonPoint LeftHand = skeleton.Joints[JointType.HandLeft].Position;
-            SkeletonPoint RightHand= skeleton.Joints[JointType.HandRight].Position;
+            SkeletonPoint RightHand = skeleton.Joints[JointType.HandRight].Position;
 
-            Point rightHandPosition = pointTransformer.TransformPoint(SkeletonPointToScreen(RightHand));
-            Point leftHandPosition = pointTransformer.TransformPoint(SkeletonPointToScreen(LeftHand));
+            Point rightHandPosition = SkeletonPointToScreen(RightHand);
+            Point leftHandPosition = SkeletonPointToScreen(LeftHand);
 
             if (IsPositionOnScreen(leftHandPosition))
             {
                 HandPointer leftHand = new HandPointer(mainWindnow, HandSide.Left);
-                leftHand.SetPosition(leftHandPosition);
+                leftHand.SetPosition(pointTransformer.TransformPoint(leftHandPosition));
                 handPointers.Add(leftHand);
             }
 
@@ -123,7 +123,7 @@ namespace KinectWPF.Controllers.KinectController
             if (IsPositionOnScreen(rightHandPosition))
             {
                 HandPointer rightHand = new HandPointer(mainWindnow, HandSide.Right);
-                rightHand.SetPosition(rightHandPosition);
+                rightHand.SetPosition(pointTransformer.TransformPoint(rightHandPosition));
                 handPointers.Add(rightHand);
             }
         }
@@ -261,22 +261,12 @@ namespace KinectWPF.Controllers.KinectController
 
         private bool SampleGestureDetected(Skeleton skeleton)
         {
-            var LS = skeleton.Joints[JointType.ShoulderLeft].Position;
-            var LE = skeleton.Joints[JointType.ElbowLeft].Position;
             var LH = skeleton.Joints[JointType.HandLeft].Position;
-
-            var RS = skeleton.Joints[JointType.ShoulderRight].Position;
-            var RE = skeleton.Joints[JointType.ElbowRight].Position;
             var RH = skeleton.Joints[JointType.HandRight].Position;
+            var B = skeleton.Joints[JointType.Head].Position;
 
-            if ((LS.Y > LE.Y)
-                && (LH.Y > LS.Y)
-                && (LS.X > LE.X)
-                && (LS.X > LH.X)
-                && (RS.Y > RE.Y)
-                && (RS.Y < RH.Y)
-                && (RS.X < RE.X)
-                && (RS.X < RH.X))
+
+            if ((LH.X < B.X && RH.X < B.X) || (LH.X > B.X && RH.X > B.X))
             {
                 return true;
             }
