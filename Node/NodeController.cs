@@ -27,6 +27,7 @@ namespace KinectWPF.Node
         private float currentSpawnTimer;
         private List<Node> nodes = new List<Node>();
         private Random random;
+        private bool allowSpawning = false;
 
         public NodeController(MainWindow mainWindow, IInputController inputController)
         {
@@ -41,17 +42,19 @@ namespace KinectWPF.Node
 
         private void GameStart()
         {
+            allowSpawning = true;
+            GenerateNodes(2);
             mainWindow.OnUpdate += Update;
         }
 
         private void GameEnd()
         {
             mainWindow.OnUpdate -= Update;
+            allowSpawning = false;
         }
 
         private void Update()
         {
-            HandleNodeSpawning();
             HandleNodeCollision();
         }
 
@@ -67,18 +70,6 @@ namespace KinectWPF.Node
             }
         }
 
-        private void HandleNodeSpawning()
-        {
-            currentSpawnTimer += MainWindow.DeltaTime;
-
-            if (currentSpawnTimer >= spawnTimer)
-            {
-                GenerateNodes(2);
-
-                currentSpawnTimer = 0;
-            }
-        }
-
         private void AddNode(Node newNode)
         {
             if (!nodes.Exists((node) => { return node == newNode; }))
@@ -91,11 +82,17 @@ namespace KinectWPF.Node
         private void RemoveNode(Node removedNode)
         {
             removedNode.OnDestroy -= RemoveNode;
+            GenerateNodes(1);
             nodes.Remove(removedNode);
         }
 
         private void GenerateNodes(int nodeCount)
         {
+            if (!allowSpawning)
+            {
+                return;
+            }
+
             for (int i = 0; i < nodeCount; ++i)
             {
                 Point randomPosition;
