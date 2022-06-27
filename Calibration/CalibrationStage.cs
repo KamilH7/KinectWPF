@@ -1,9 +1,8 @@
 ﻿namespace KinectWPF.Calibration
 {
-    enum CalibrationStage
+    internal enum CalibrationStage
     {
         TopLeftData,
-        BottomRightData,
-        Finished
+        BottomRightData
     }
 }

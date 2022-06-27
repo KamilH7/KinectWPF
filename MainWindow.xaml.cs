@@ -1,35 +1,56 @@
-﻿using KinectWPF.Calibration;
-using KinectWPF.Controllers.KinectController;
-using KinectWPF.Controllers.MouseController;
-using KinectWPF.Node;
-using System;
+﻿using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using KinectWPF.Calibration;
+using KinectWPF.Controllers.KinectController;
+using KinectWPF.Controllers.MouseController;
+using KinectWPF.Node;
 
 namespace KinectWPF
 {
     public partial class MainWindow : Window
     {
-        public static float DeltaTime = 0;
-        private DateTime previousFrameTime;
+        #region Events
 
         public event Action OnUpdate;
         public event Action OnGameStart;
         public event Action OnGameOver;
 
-        public Label MainText{ get; private set; }
-        public Canvas MainCanvas { get; private set; }
-        public Image KinectImage { get; private set; }
+        #endregion
+
+        #region Private Fields
+
+        private DateTime previousFrameTime;
 
         private IInputController inputController;
         private PointTransformer pointTransformer;
+        private float gameTimer;
+
+        private int score;
+
+        private float startScreenMinTime = 2f;
+        private float starScreenTimer;
+
+        #endregion
+
+        #region Constants
 
         private const bool useMouse = true;
         private const float gameTime = 30;
-        private float gameTimer;
+        public static float DeltaTime;
 
-        private int score = 0;
+        #endregion
+
+        #region Public Properties
+
+        public Label MainText { get; private set; }
+        public Canvas MainCanvas { get; private set; }
+        public Image KinectImage { get; private set; }
+
+        #endregion
+
+        #region Constructors
 
         public MainWindow()
         {
@@ -49,6 +70,19 @@ namespace KinectWPF
             InitializeGame();
         }
 
+        #endregion
+
+        #region Public Methods
+
+        public void IncreaseScore()
+        {
+            score += 1;
+            UpdateScoreText();
+        }
+
+        #endregion
+
+        #region Private Methods
 
         private void InitializeGame()
         {
@@ -85,7 +119,7 @@ namespace KinectWPF
 
         private void MainLoop(object sender, EventArgs e)
         {
-            if(previousFrameTime == null)
+            if (previousFrameTime == null)
             {
                 previousFrameTime = DateTime.Now;
                 DeltaTime = 0;
@@ -100,8 +134,6 @@ namespace KinectWPF
             OnUpdate?.Invoke();
         }
 
-        private float startScreenMinTime = 2f;
-        private float starScreenTimer = 0;
         private void StartLoop(object sender, EventArgs e)
         {
             if (starScreenTimer < startScreenMinTime)
@@ -126,18 +158,13 @@ namespace KinectWPF
                 EndGame();
             }
         }
+
         private void EndLoop(object sender, EventArgs e)
         {
             if (inputController.IsInStartPosition())
             {
                 InitializeGame();
             }
-        }
-
-        public void IncreaseScore()
-        {
-            score += 1;
-            UpdateScoreText();
         }
 
         private void SetScore(int score)
@@ -148,7 +175,7 @@ namespace KinectWPF
 
         private void SetTime(float time)
         {
-            this.gameTimer = time;
+            gameTimer = time;
             UpdateScoreText();
         }
 
@@ -203,7 +230,6 @@ namespace KinectWPF
             Show(EndText);
         }
 
-
         private void Hide(UIElement element)
         {
             element.Visibility = Visibility.Hidden;
@@ -237,5 +263,6 @@ namespace KinectWPF
             inputController.Initialize(this, pointTransformer);
         }
 
+        #endregion
     }
 }

@@ -1,24 +1,32 @@
-﻿using KinectWPF.Calibration;
+﻿using System.Windows;
+using System.Windows.Input;
+using KinectWPF.Calibration;
 using KinectWPF.Controllers.KinectController;
 using KinectWPF.InputControllers;
-using System;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
 
 namespace KinectWPF.Controllers.MouseController
 {
-    class MouseController : IInputController
+    internal class MouseController : IInputController
     {
+        #region Private Fields
+
         private HandPointer handPointer;
         private MainWindow window;
         private PointTransformer pointTransformer;
+
+        #endregion
+
+        #region Constructors
 
         public MouseController(MainWindow mainWindow)
         {
             handPointer = new HandPointer(mainWindow, HandSide.Left);
             mainWindow.OnUpdate += DrawPointer;
         }
+
+        #endregion
+
+        #region Public Methods
 
         public Point GetCalibrationPosition(CalibrationStage calibrationStage)
         {
@@ -47,14 +55,16 @@ namespace KinectWPF.Controllers.MouseController
             Point mousePosition = GetMousePositionOnScreen();
             Point middle = new Point(window.Width / 2, window.Height / 2);
 
-            bool isXOkay = mousePosition.X < middle.X + 50 && 
-                           mousePosition.X > middle.X - 50;
+            bool isXOkay = mousePosition.X < middle.X + 50 && mousePosition.X > middle.X - 50;
 
-            bool isYOkay = mousePosition.Y < middle.Y + 50 && 
-                           mousePosition.Y > middle.Y - 50;
+            bool isYOkay = mousePosition.Y < middle.Y + 50 && mousePosition.Y > middle.Y - 50;
 
             return isXOkay && isYOkay;
         }
+
+        #endregion
+
+        #region Private Methods
 
         private void DrawPointer()
         {
@@ -67,10 +77,10 @@ namespace KinectWPF.Controllers.MouseController
             {
                 return Mouse.GetPosition(window);
             }
-            else
-            {
-                return new Point(0, 0);
-            }
+
+            return new Point(0, 0);
         }
+
+        #endregion
     }
 }
