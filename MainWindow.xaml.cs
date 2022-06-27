@@ -25,7 +25,7 @@ namespace KinectWPF
         private IInputController inputController;
         private PointTransformer pointTransformer;
 
-        private const bool useMouse = false;
+        private const bool useMouse = true;
         private const float gameTime = 30;
         private float gameTimer;
 
