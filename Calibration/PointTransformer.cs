@@ -14,6 +14,9 @@ namespace KinectWPF.Calibration
         IInputController inputController;
         MainWindow mainWindow;
 
+        string tempText;
+        Point temp;
+
         public PointTransformer(MainWindow mainWindow)
         {
             this.mainWindow = mainWindow;
@@ -26,9 +29,11 @@ namespace KinectWPF.Calibration
         {
             this.inputController = inputController;
 
-            calibrationStage = CalibrationStage.TopLeftData;
+            calibrationStage = CalibrationStage.BottomRightData;
             mainWindow.OnUpdate += LookForSamplePosition;
             IsCallibrating = true;
+            tempText = (string) mainWindow.StartText.Content;
+            mainWindow.StartText.Content = "Prawy dolny róg";
         }
 
         private void LookForSamplePosition()
@@ -56,6 +61,7 @@ namespace KinectWPF.Calibration
             }
         }
 
+
         private void SampleBottomRightData()
         {
             calibrationStage = CalibrationStage.TopLeftData;
@@ -63,7 +69,9 @@ namespace KinectWPF.Calibration
             mainWindow.OnUpdate -= LookForSamplePosition;
             mainWindow.OnUpdate += Await;
 
-            bottomRightPosition = inputController.GetCalibrationPosition(CalibrationStage.BottomRightData);
+            temp = inputController.GetCalibrationPosition(CalibrationStage.BottomRightData);
+
+            mainWindow.StartText.Content = "Lewy górny róg";
         }
 
         private void SampleTopLeftData()
@@ -71,8 +79,11 @@ namespace KinectWPF.Calibration
             mainWindow.OnUpdate -= LookForSamplePosition;
 
             topLeftPosition = inputController.GetCalibrationPosition(CalibrationStage.TopLeftData);
+            bottomRightPosition = temp;
 
             IsCallibrating = false;
+
+            mainWindow.StartText.Content = tempText;
         }
 
         public Point TransformPoint(Point point)

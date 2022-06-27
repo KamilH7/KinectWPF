@@ -261,7 +261,27 @@ namespace KinectWPF.Controllers.KinectController
 
         private bool SampleGestureDetected(Skeleton skeleton)
         {
-            throw new NotImplementedException();
+            var LS = skeleton.Joints[JointType.ShoulderLeft].Position;
+            var LE = skeleton.Joints[JointType.ElbowLeft].Position;
+            var LH = skeleton.Joints[JointType.HandLeft].Position;
+
+            var RS = skeleton.Joints[JointType.ShoulderRight].Position;
+            var RE = skeleton.Joints[JointType.ElbowRight].Position;
+            var RH = skeleton.Joints[JointType.HandRight].Position;
+
+            if ((LS.Y > LE.Y)
+                && (LH.Y > LS.Y)
+                && (LS.X > LE.X)
+                && (LS.X > LH.X)
+                && (RS.Y > RE.Y)
+                && (RS.Y < RH.Y)
+                && (RS.X < RE.X)
+                && (RS.X < RH.X))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public Point GetCalibrationPosition(CalibrationStage calibrationStage)

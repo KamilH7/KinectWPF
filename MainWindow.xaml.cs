@@ -18,6 +18,7 @@ namespace KinectWPF
         public event Action OnGameStart;
         public event Action OnGameOver;
 
+        public Label MainText{ get; private set; }
         public Canvas MainCanvas { get; private set; }
         public Image KinectImage { get; private set; }
 
@@ -38,6 +39,8 @@ namespace KinectWPF
             pointTransformer = new PointTransformer(this);
 
             InitializeController();
+
+            pointTransformer.StartCalibration(inputController);
 
             NodeController nodeSpawner = new NodeController(this, inputController);
 
@@ -105,7 +108,7 @@ namespace KinectWPF
             {
                 starScreenTimer += DeltaTime;
             }
-            else if (inputController.IsInStartPosition())
+            else if (inputController.IsInStartPosition() && !pointTransformer.IsCallibrating)
             {
                 starScreenTimer = 0;
                 StartGame();
@@ -215,6 +218,7 @@ namespace KinectWPF
 
         private void InitializeReferences()
         {
+            MainText = StartText;
             MainCanvas = canvas;
             KinectImage = kinectImage;
         }
